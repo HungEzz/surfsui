@@ -1,5 +1,5 @@
 {
-  "name": "tasmil-dapp-rankings-api",
+  "name": "surfsui-dapp-rankings-api",
   "version": "1.0.0",
   "description": "REST API for DApp Rankings data from PostgreSQL database",
   "main": "dist/app.js",
