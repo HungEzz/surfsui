@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from 'next/image';
 
 interface GlassmorphismCreditCardProps {
   cardholderName: string;
@@ -41,9 +42,11 @@ const GlassmorphismCreditCard: React.FC<GlassmorphismCreditCardProps> = ({
         {/* Card logo and chip */}
         <div className="flex justify-between items-start">
           <div className="w-12 h-8 bg-gradient-to-r from-yellow-400 to-yellow-300 rounded-md" />
-          <img 
+          <Image 
             src={logoSrc} 
             alt="Card logo" 
+            width={80}
+            height={24}
             className="h-6 object-contain opacity-90"
             onError={(e) => {
               const target = e.target as HTMLImageElement;

@@ -1,6 +1,6 @@
 import React from "react";
-
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { formatCurrency, formatPercentage, truncateAddress } from "@/lib/utils";
 import { Trader } from "@/data/dashboardMockData";
 
@@ -50,9 +50,11 @@ const TraderCard: React.FC<TraderCardProps> = ({ trader }) => {
             }}
           >
             {trader.avatar ? (
-              <img
+              <Image
                 src={trader.avatar}
                 alt="Trader"
+                width={40}
+                height={40}
                 className="w-10 h-10 rounded-full"
               />
             ) : (

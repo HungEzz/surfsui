@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { DApp } from "@/data/dashboardMockData";
 import { Users, ExternalLink } from "lucide-react";
 import { getDAppIconData, getInitials } from "@/utils/dappIcons";
+import Image from "next/image";
 
 interface DAppCardProps {
   dapp: DApp;
@@ -53,9 +54,11 @@ const DAppCard: React.FC<DAppCardProps> = ({ dapp }) => {
   const renderIcon = () => {
     if (dappIconData.hasImage) {
       return (
-        <img
+        <Image
           src={dappIconData.icon}
           alt={`${dapp.name} logo`}
+          width={56}
+          height={56}
           className="w-14 h-14 object-contain rounded-2xl"
           onError={(e) => {
             const target = e.target as HTMLImageElement;

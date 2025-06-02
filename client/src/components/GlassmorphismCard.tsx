@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef, useState } from "react";
+import Image from 'next/image';
 
 interface GlassmorphismCardProps {
   title: string;
@@ -91,13 +92,19 @@ const GlassmorphismCard: React.FC<GlassmorphismCardProps> = ({
         }}
       >
         <div 
-          className="bg-white/10 p-1 rounded-full mb-4"
+          className="mb-6 flex justify-center"
           style={{
             transform: tiltEffect && isHovering ? 'translateZ(25px)' : 'translateZ(0)',
             transition: isHovering ? 'transform 0.1s ease-out' : 'transform 0.5s ease',
           }}
         >
-          <img src={imageSrc} alt={title} className="w-14 h-14" />
+          <Image 
+            src={imageSrc} 
+            alt={title} 
+            width={56}
+            height={56}
+            className="w-14 h-14" 
+          />
         </div>
         
         <h2 
