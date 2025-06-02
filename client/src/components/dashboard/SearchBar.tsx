@@ -265,7 +265,7 @@ const SearchBar: React.FC = () => {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 8 }}
-            className="absolute top-full left-0 right-0 mt-3 z-[1000]"
+            className="absolute top-full left-0 right-0 mt-3 z-[55]"
           >
             <div className="bg-gradient-to-r from-blue-500/15 via-purple-500/15 to-cyan-500/15 border border-blue-400/30 rounded-xl px-4 py-3 backdrop-blur-sm">
               <div className="flex items-center justify-between">

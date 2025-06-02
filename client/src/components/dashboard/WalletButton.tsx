@@ -59,7 +59,7 @@ const WalletButton: React.FC = () => {
   }
 
   return (
-    <div className="relative z-50" ref={dropdownRef}>
+    <div className="relative z-[60]" ref={dropdownRef}>
       <motion.button
         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
         className="bg-gradient-to-r from-[#1EAEDB] to-blue-500 hover:from-[#1EAEDB]/90 hover:to-blue-600 text-white px-6 py-2.5 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 hover:shadow-lg hover:shadow-[#1EAEDB]/25"
@@ -103,7 +103,7 @@ const WalletButton: React.FC = () => {
       {/* Dropdown menu */}
       {isDropdownOpen && (
         <motion.div
-          className="absolute top-full right-0 mt-2 w-64 bg-gray-900/95 backdrop-blur-xl border border-gray-700/50 rounded-xl shadow-2xl z-[9999]"
+          className="absolute top-full right-0 mt-2 w-64 bg-gray-900/95 backdrop-blur-xl border border-gray-700/50 rounded-xl shadow-2xl z-[10000]"
           initial={{ opacity: 0, y: -10, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: -10, scale: 0.95 }}
