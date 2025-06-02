@@ -59,7 +59,7 @@ const WalletButton: React.FC = () => {
   }
 
   return (
-    <div className="relative z-[80]" ref={dropdownRef}>
+    <div className="relative z-[90]" ref={dropdownRef}>
       <motion.button
         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
         className="bg-gradient-to-r from-[#1EAEDB] to-blue-500 hover:from-[#1EAEDB]/90 hover:to-blue-600 text-white px-6 py-2.5 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 hover:shadow-lg hover:shadow-[#1EAEDB]/25"

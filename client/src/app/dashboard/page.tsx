@@ -2,7 +2,6 @@
 
 import React, { useMemo } from "react";
 import { motion } from "framer-motion";
-import Navbar from "@/components/Navbar";
 import Header from "@/components/dashboard/Header";
 import SearchBar from "@/components/dashboard/SearchBar";
 import DAppSection from "@/components/dashboard/DAppSection";
@@ -14,7 +13,6 @@ import { useDAppData } from "@/hooks/useDAppData";
 const DashboardPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900">
-      <Navbar />
       <Header />
       <DashboardContent />
       <Footer />

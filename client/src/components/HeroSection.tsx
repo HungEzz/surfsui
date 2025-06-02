@@ -321,11 +321,45 @@ const HeroSection = memo(() => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="relative group"
+            style={{
+              color: '#ffffff',
+            }}
           >
             <div className="absolute -inset-1 bg-gradient-to-r from-[#1EAEDB] via-cyan-400 to-blue-500 rounded-xl blur opacity-75 group-hover:opacity-100 transition duration-300" />
+            
+            <style jsx>{`
+              :global([data-dapp-kit="connectButton"] button),
+              :global([data-dapp-kit="connectButton"]),
+              :global(.dapp-kit-connect-button),
+              :global(button[class*="dapp-kit"]) {
+                color: #ffffff !important;
+                text-shadow: none !important;
+              }
+              
+              :global([data-dapp-kit="connectButton"] button span),
+              :global([data-dapp-kit="connectButton"] span),
+              :global(.dapp-kit-connect-button span),
+              :global(button[class*="dapp-kit"] span) {
+                color: #ffffff !important;
+                text-shadow: none !important;
+              }
+              
+              :global([data-dapp-kit="connectButton"] *),
+              :global(.dapp-kit-connect-button *),
+              :global(button[class*="dapp-kit"] *) {
+                color: #ffffff !important;
+                text-shadow: none !important;
+              }
+            `}</style>
+            
             <ConnectButton
               connectText="🚀 Launch App"
-              className="relative group px-8 py-4 bg-gradient-to-r from-[#1EAEDB] to-blue-500 hover:from-[#1EAEDB]/90 hover:to-blue-600 text-white font-semibold rounded-xl transition-all duration-300 transform hover:shadow-2xl hover:shadow-[#1EAEDB]/50"
+              className="relative group px-8 py-4 bg-gradient-to-r from-[#1EAEDB] to-blue-500 hover:from-[#1EAEDB]/90 hover:to-blue-600 font-semibold rounded-xl transition-all duration-300 transform hover:shadow-2xl hover:shadow-[#1EAEDB]/50"
+              style={{ 
+                color: '#ffffff !important',
+                '--dapp-kit-button-text-color': '#ffffff',
+                '--dapp-kit-connect-button-text-color': '#ffffff'
+              } as React.CSSProperties}
             />
           </motion.div>
         </motion.div>

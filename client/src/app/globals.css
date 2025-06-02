@@ -163,3 +163,53 @@
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+#__next {
+  height: 100%;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #1e40af, #0ea5e9);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #1d4ed8, #0284c7);
+}
+
+/* ConnectButton text color override */
+[data-dapp-kit="connectButton"] button,
+.dapp-kit-connect-button,
+button[class*="dapp-kit"],
+button[data-testid*="connect"] {
+  color: #ffffff !important;
+}
+
+[data-dapp-kit="connectButton"] button span,
+.dapp-kit-connect-button span,
+button[class*="dapp-kit"] span,
+button[data-testid*="connect"] span {
+  color: #ffffff !important;
+}
+
+/* Additional override for nested elements */
+[data-dapp-kit="connectButton"] *,
+.dapp-kit-connect-button *,
+button[class*="dapp-kit"] * {
+  color: #ffffff !important;
+}
