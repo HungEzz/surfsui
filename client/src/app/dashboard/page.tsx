@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from "react";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import Header from "@/components/dashboard/Header";
@@ -9,8 +9,7 @@ import DAppSection from "@/components/dashboard/DAppSection";
 import Pagination from "@/components/dashboard/Pagination";
 import Footer from "@/components/Footer";
 import { useDashboard } from "@/contexts/DashboardContext";
-import { apiService, transformBackendDApp, BackendDApp } from "@/services/api";
-import { DApp } from "@/data/dashboardMockData";
+import { useDAppData } from "@/hooks/useDAppData";
 
 const DashboardPage = () => {
   return (
@@ -24,65 +23,40 @@ const DashboardPage = () => {
 };
 
 const DashboardContent = () => {
-  const { currentPage, searchTerm } = useDashboard();
-  const [trendingDApps, setTrendingDApps] = useState<DApp[]>([]);
-  const [topDeFiProtocols, setTopDeFiProtocols] = useState<DApp[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [totalPages, setTotalPages] = useState(1);
+  const { currentPage, searchTerm, isSearching } = useDashboard();
+  const { allDApps, loading, error, refetch, isInitialLoad } = useDAppData();
 
-  useEffect(() => {
-    const fetchDApps = async () => {
-      try {
-        setLoading(true);
-        setError(null);
+  // Memoized filtered and paginated data to prevent unnecessary recalculations
+  const { filteredDApps, paginatedData, totalPages } = useMemo(() => {
+    // Filter DApps based on search term
+    let filtered = allDApps;
+    if (searchTerm.trim()) {
+      filtered = allDApps.filter(dapp => 
+        dapp.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
 
-        let backendDApps: BackendDApp[] = [];
+    // Pagination calculations
+    const itemsPerPage = 10; // 5 DApps per section, 2 sections
+    const totalPagesCount = Math.ceil(filtered.length / itemsPerPage);
+    
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const pageData = filtered.slice(startIndex, endIndex);
 
-        if (searchTerm.trim()) {
-          // If there's a search term, get all DApps and filter client-side
-          const allDApps = await apiService.getAllDApps();
-          backendDApps = allDApps.filter(dapp => 
-            dapp.dapp_name.toLowerCase().includes(searchTerm.toLowerCase())
-          );
-        } else {
-          // Get all DApps for pagination
-          backendDApps = await apiService.getAllDApps();
-        }
+    // Split into two sections - each gets up to 5 DApps
+    const trending = pageData.slice(0, 5);
+    const defiProtocols = pageData.slice(5, 10);
 
-        // Transform backend data to frontend format
-        const transformedDApps = backendDApps.map((dapp, index) => 
-          transformBackendDApp(dapp, index)
-        );
-
-        // Implement pagination client-side - 10 DApps per page (5 per section)
-        const itemsPerPage = 10; // 5 DApps per section, 2 sections
-        const totalItems = transformedDApps.length;
-        const totalPagesCount = Math.ceil(totalItems / itemsPerPage);
-        
-        const startIndex = (currentPage - 1) * itemsPerPage;
-        const endIndex = startIndex + itemsPerPage;
-        const pageData = transformedDApps.slice(startIndex, endIndex);
-
-        // Split into two sections - each gets up to 5 DApps
-        const trending = pageData.slice(0, 5);
-        const defiProtocols = pageData.slice(5, 10);
-
-        setTrendingDApps(trending);
-        setTopDeFiProtocols(defiProtocols);
-        setTotalPages(totalPagesCount);
-      } catch (err) {
-        console.error('Error fetching DApps:', err);
-        setError('Failed to fetch DApp data. Please try again.');
-      } finally {
-        setLoading(false);
-      }
+    return {
+      filteredDApps: filtered,
+      paginatedData: { trending, defiProtocols },
+      totalPages: totalPagesCount
     };
+  }, [allDApps, searchTerm, currentPage]);
 
-    fetchDApps();
-  }, [currentPage, searchTerm]);
-
-  if (loading) {
+  // Show loading state only during initial load
+  if (loading && isInitialLoad) {
     return (
       <div className="container mx-auto px-6 py-8">
         <div className="flex items-center justify-center min-h-[400px]">
@@ -115,7 +89,7 @@ const DashboardContent = () => {
               <p className="text-red-400 text-lg font-semibold">Error Loading Data</p>
               <p className="text-gray-300 mt-2">{error}</p>
               <button 
-                onClick={() => window.location.reload()}
+                onClick={refetch}
                 className="mt-4 px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
               >
                 Retry
@@ -140,6 +114,21 @@ const DashboardContent = () => {
         </motion.div>
       </div>
 
+      {/* Show searching indicator when filtering */}
+      {isSearching && (
+        <div className="flex justify-center mb-4">
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="bg-blue-500/20 border border-blue-400/30 rounded-lg px-4 py-2 flex items-center space-x-2"
+          >
+            <div className="w-4 h-4 border-2 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
+            <span className="text-blue-300 text-sm">Filtering results...</span>
+          </motion.div>
+        </div>
+      )}
+
       {/* DApp Sections - Side by Side Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         {/* Left Section - Trending DApps */}
@@ -150,7 +139,7 @@ const DashboardContent = () => {
         >
           <DAppSection
             title="Trending DApps"
-            dapps={trendingDApps}
+            dapps={paginatedData.trending}
           />
         </motion.div>
         
@@ -161,8 +150,8 @@ const DashboardContent = () => {
           transition={{ duration: 0.5, delay: 0.2 }}
         >
           <DAppSection
-            title="^_^"
-            dapps={topDeFiProtocols}
+            title="More DApps"
+            dapps={paginatedData.defiProtocols}
           />
         </motion.div>
       </div>
@@ -177,13 +166,13 @@ const DashboardContent = () => {
         >
           <Pagination
             totalPages={totalPages}
-            totalItems={trendingDApps.length + topDeFiProtocols.length}
+            totalItems={filteredDApps.length}
           />
         </motion.div>
       )}
 
       {/* No results message */}
-      {trendingDApps.length === 0 && topDeFiProtocols.length === 0 && !loading && (
+      {filteredDApps.length === 0 && !loading && !isInitialLoad && (
         <div className="flex items-center justify-center min-h-[300px]">
           <motion.div
             className="text-center"

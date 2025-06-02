@@ -6,29 +6,45 @@ import { Search, X, Sparkles, Zap } from "lucide-react";
 import { useDashboard } from "@/contexts/DashboardContext";
 
 const SearchBar: React.FC = () => {
-  const { searchTerm, setSearchTerm } = useDashboard();
+  const { searchTerm, handleSearch, isSearching, setIsSearching } = useDashboard();
   const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm);
   const [isFocused, setIsFocused] = useState(false);
-  const [isSearching, setIsSearching] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Debounce search term updates
+  // Sync local search term with global search term
   useEffect(() => {
-    if (localSearchTerm !== searchTerm) {
-      setIsSearching(true);
+    setLocalSearchTerm(searchTerm);
+  }, [searchTerm]);
+
+  // Optimized debounce with better state management
+  useEffect(() => {
+    // Clear previous timer
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
     }
 
-    const timer = setTimeout(() => {
-      setSearchTerm(localSearchTerm);
-      setIsSearching(false);
-    }, 300);
+    // Only proceed if there's actually a change
+    if (localSearchTerm !== searchTerm) {
+      setIsSearching(true);
+      
+      debounceTimerRef.current = setTimeout(() => {
+        handleSearch(localSearchTerm);
+        setIsSearching(false);
+      }, 500); // Increased debounce time to reduce API calls
+    }
 
-    return () => clearTimeout(timer);
-  }, [localSearchTerm, setSearchTerm, searchTerm]);
+    // Cleanup timer on unmount
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, [localSearchTerm, searchTerm, handleSearch, setIsSearching]);
 
   const handleClear = () => {
     setLocalSearchTerm("");
-    setSearchTerm("");
+    handleSearch("");
     setIsSearching(false);
     inputRef.current?.focus();
   };
@@ -45,6 +61,14 @@ const SearchBar: React.FC = () => {
     if (e.key === 'Escape') {
       setIsFocused(false);
       inputRef.current?.blur();
+    }
+    // Immediate search on Enter
+    if (e.key === 'Enter' && localSearchTerm !== searchTerm) {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+      handleSearch(localSearchTerm);
+      setIsSearching(false);
     }
   };
 
@@ -241,7 +265,7 @@ const SearchBar: React.FC = () => {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 8 }}
-            className="absolute top-full left-0 right-0 mt-3 z-[9999]"
+            className="absolute top-full left-0 right-0 mt-3 z-[1000]"
           >
             <div className="bg-gradient-to-r from-blue-500/15 via-purple-500/15 to-cyan-500/15 border border-blue-400/30 rounded-xl px-4 py-3 backdrop-blur-sm">
               <div className="flex items-center justify-between">
